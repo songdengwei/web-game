@@ -58,15 +58,16 @@ export default class GameMachine extends Vue {
   onAssetsLoaded() {
     let slotTextures = [
       PIXI.Texture.fromImage(require('@/assets/eggHead.png')),
-      PIXI.Texture.fromImage(require('@/assets/eggHead.png')),
-      PIXI.Texture.fromImage(require('@/assets/eggHead.png')),
-      PIXI.Texture.fromImage(require('@/assets/eggHead.png')),
+      PIXI.Texture.fromImage(require('@/assets/flowerTop.png')),
+      PIXI.Texture.fromImage(require('@/assets/helmlok.png')),
+      PIXI.Texture.fromImage(require('@/assets/skully.png')),
     ];
 
     var reelContainer = new PIXI.Container();
     for (var i = 0; i < 3; i++) {
       var rc = new PIXI.Container();
       rc.x = i * this.config.REEL_WIDTH + i * 22 + 80;
+      rc.y = -20;
       reelContainer.addChild(rc);
 
       var reel: any = {
@@ -85,10 +86,8 @@ export default class GameMachine extends Vue {
         let symbol: any = new PIXI.Sprite(slotTextures[Math.floor(Math.random() * slotTextures.length)]);
         //Scale the symbol to fit symbol area.
         symbol.y = j * this.config.SYMBOL_SIZE;
-        symbol.scale.x = symbol.scale.y = Math.min(
-          this.config.SYMBOL_SIZE / symbol.width,
-          this.config.SYMBOL_SIZE / symbol.height
-        );
+        symbol.scale.x = symbol.scale.y =
+          Math.min(this.config.SYMBOL_SIZE / symbol.width, this.config.SYMBOL_SIZE / symbol.height) * 0.9;
         symbol.x = Math.round((this.config.SYMBOL_SIZE - symbol.width) / 2);
         reel.symbols.push(symbol);
         rc.addChild(symbol);
@@ -117,10 +116,8 @@ export default class GameMachine extends Vue {
             //Detect going over and swap a texture.
             //This should in proper product be determined from some logical reel.
             s.texture = slotTextures[Math.floor(Math.random() * slotTextures.length)];
-            s.scale.x = s.scale.y = Math.min(
-              this.config.SYMBOL_SIZE / s.texture.width,
-              this.config.SYMBOL_SIZE / s.texture.height
-            );
+            s.scale.x = s.scale.y =
+              Math.min(this.config.SYMBOL_SIZE / s.texture.width, this.config.SYMBOL_SIZE / s.texture.height) * 0.9;
             s.x = Math.round((this.config.SYMBOL_SIZE - s.width) / 2);
           }
         }
