@@ -1,0 +1,63 @@
+/* 首页公用样式 */
+.ii_title {
+  text-align: center;
+  color: #fff;
+  padding: 50px 0px;
+  li {
+    box-sizing: border-box;
+    width: 20%;
+    border-right: 1px solid #fff;
+    height: 64px;
+    &:nth-last-of-type(1) {
+      border: none;
+    }
+    big {
+      font-size: 40px;
+      line-height: 30px;
+    }
+    p {
+      line-height: 32px;
+    }
+  }
+}
+.ii_story {
+  text-align: left;
+  background: #fff;
+  padding: 40px;
+  img {
+    width: 300px;
+  }
+  .iis_con {
+    position: relative;
+    overflow: hidden;
+    .btn {
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+    }
+  }
+  .iis_con {
+    img {
+      float: left;
+      width: 300px;
+    }
+  }
+  .iis_txt {
+    float: right;
+    width: 750px;
+    h5 {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    p {
+      color: #999;
+      line-height: 24px;
+      height: 144px;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "vue-ts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve  --mode development --fix  --color",
+    "build": "vue-cli-service build  --mode production --report --color",
+    "lint": "vue-cli-service lint --color",
+    "typeDoc": "rm -rf ./docs && typedoc  --options ./typedoc.json",
+    "serve:dist": "http-server ./dist --gzip",
+    "history:dist": "node ./server"
+  },
+  "dependencies": {
+    "@types/pixi.js": "^4.8.0",
+    "axios": "^0.18.0",
+    "mint-ui": "^2.2.13",
+    "pixi.js": "^4.8.2",
+    "register-service-worker": "^1.0.0",
+    "rxjs": "^6.2.2",
+    "swiper": "^4.3.5",
+    "vue": "^2.5.17",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "vuex-class": "^0.3.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.1",
+    "@vue/cli-plugin-eslint": "^3.0.1",
+    "@vue/cli-plugin-pwa": "^3.0.1",
+    "@vue/cli-plugin-typescript": "^3.0.1",
+    "@vue/cli-service": "^3.0.1",
+    "@vue/eslint-config-prettier": "^3.0.1",
+    "@vue/eslint-config-typescript": "^3.0.1",
+    "babel-plugin-component": "^1.1.1",
+    "compression-webpack-plugin": "^1.1.11",
+    "eslint": "^5.5.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-loader": "^2.1.0",
+    "http-server": "^0.11.1",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "lint-staged": "^7.2.2",
+    "typedoc": "^0.11.1",
+    "typescript": "^3.0.0",
+    "vue-template-compiler": "^2.5.17"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.ts": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

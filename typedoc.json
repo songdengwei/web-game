@@ -1,0 +1,10 @@
+{
+  "name": "vue-admin",
+  "readme": "./README.md",
+  "target": "ES5",
+  "out": "./docs/",
+  "excludeExternals": true,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "includeDeclarations": true
+}

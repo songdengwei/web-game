@@ -1,0 +1,133 @@
+@main-color : #363636;
+@hover-color : #fd5f56;
+.pubOver {
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
+}
+a {
+  color: #333;
+  transition-property: color background;
+  &:extend(.pubOver);
+}
+body {
+  background: #e4e4e4;
+}
+a:hover {
+  color: @hover-color !important;
+}
+table {
+  width: 100% !important;
+}
+.wrap {
+  position: relative;
+  width: 1200px;
+  margin: 0px auto;
+}
+.shadow {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.log_disabled {
+  cursor: no-drop;
+}
+.btn {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #dcdfe6;
+  border-color: #dcdfe6;
+  color: #606266;
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  transition: 0.1s;
+  font-weight: 500;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.btn:hover {
+  border-color: @hover-color;
+}
+
+.flex {
+  display: flex;
+  display: -webkit-flex;
+}
+
+.flex-auto {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+.flex-right {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.flex-left {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+.flex-between {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-top-auto {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.flex-top-right {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.flex-top-left {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.flex-top-between {
+  &:extend(.flex);
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-star;
+}
+
+.flex-vertical-between {
+  &:extend(.flex);
+  justify-content: center;
+  align-items: space-between;
+}
+.flex-vertical-center {
+  &:extend(.flex);
+  justify-content: center;
+  align-items: center;
+}
+.flex-vertical-around {
+  &:extend(.flex);
+  justify-content: center;
+  align-items: space-around;
+}
+.flex-vertical-stretch {
+  &:extend(.flex);
+  justify-content: center;
+  align-items: stretch;
+}

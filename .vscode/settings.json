@@ -1,0 +1,4 @@
+{
+  "prettier.eslintIntegration": true, //按照prettier的规则格式化
+  "editor.formatOnSave": true //保存时自动格式化
+}
