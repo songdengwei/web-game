@@ -1,6 +1,6 @@
 export function date(value: string, fmt: string = 'yyyy-MM-dd hh:mm:ss'): string {
   // 插入到父节点时调用
-  let date: Date = new Date(+value);
+  let date: Date = new Date(value);
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
   }

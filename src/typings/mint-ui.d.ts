@@ -25,6 +25,7 @@ declare module 'mint-ui' {
   export let CellSwipe: any;
   export let Spinner: any;
   export let TabContainer: any;
+  export let TabContainerItem: any;
   export let Search: any;
   // Form Components
   export let Switch: any;

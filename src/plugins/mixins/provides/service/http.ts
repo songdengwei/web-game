@@ -3,6 +3,7 @@ import { API, HOST, OPTIONS } from '@/config';
 import { router } from '@/router';
 import store from '@/store';
 import { locStorage } from '@/plugins/mixins/provides/service/storage';
+import { Indicator, Toast } from 'mint-ui';
 
 // axios默认配置
 Object.assign(axios.defaults, OPTIONS);
@@ -111,6 +112,7 @@ class Http extends Methods implements IHttp {
           })
           .catch((error) => {
             delete postCount[url];
+            Indicator.close();
             reject(error);
           });
       }
@@ -167,6 +169,11 @@ axios.interceptors.response.use(
     if (response.data.success) {
       return response.data;
     } else {
+      Toast({
+        message: response.data.error.message || response.data.error.details,
+        position: 'bottom',
+        duration: 3000,
+      });
       // Message({
       //   message: response.data.error.message || response.data.error.details,
       //   type: 'error',
@@ -196,6 +203,14 @@ axios.interceptors.response.use(
           break;
         default:
           if (!!error.response.data && !!error.response.data.__abp) {
+            Toast({
+              message:
+                error.response.data.error.details === null
+                  ? error.response.data.error.message
+                  : error.response.data.error.details,
+              position: 'bottom',
+              duration: 3000,
+            });
             // Message({
             //   dangerouslyUseHTMLString: true,
             //   message:
@@ -206,6 +221,11 @@ axios.interceptors.response.use(
             //   duration: 3 * 1000,
             // });
           } else {
+            Toast({
+              message: error.message,
+              position: 'bottom',
+              duration: 3000,
+            });
             // Message({
             //   message: error.message,
             //   type: 'error',

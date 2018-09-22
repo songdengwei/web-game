@@ -7,7 +7,7 @@ const routes: RouteConfig[] = [
   {
     name: '',
     path: '',
-    redirect: 'demo/usage',
+    redirect: 'game/machine',
   },
   {
     name: 'demo',

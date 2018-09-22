@@ -5,3 +5,4 @@ declare module '*.vue' {
 declare module 'swiper';
 
 declare var Swiper: any;
+// declare var TWEEN: any;

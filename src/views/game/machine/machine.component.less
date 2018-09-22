@@ -9,10 +9,120 @@
   height: 100%;
   overflow: hidden;
   margin: 0px auto;
-  canvas {
+  box-sizing: border-box;
+  padding-top: 5.34rem;
+  .attention_bg {
+    position: fixed;
     width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.6);
+    .attention_layer {
+      position: absolute;
+      width: 60%;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      left: 50%;
+      top: 50%;
+
+      transform: translateX(-50%) translateY(-50%);
+      span {
+        position: absolute;
+        display: block;
+        cursor: pointer;
+        right: 15px;
+        top: 10px;
+        font-size: 18px;
+      }
+      img {
+        width: 100%;
+      }
+      p {
+        font-size: 16px;
+      }
+    }
+  }
+  .machine_time {
+    display: block;
+    position: absolute;
+    font-size: 0.35rem;
+    font-weight: bold;
+    color: #e35f00;
+    top: 8.14rem;
+    left: 4rem;
+  }
+  .machine_pole {
+    display: block;
+    position: absolute;
+    background: url(~@/assets/dlt_01.png) no-repeat center top;
+    background-size: 100% auto;
+    top: 3.2rem;
+    left: 6.56rem;
+    width: 0.73rem;
+    height: 2.62rem;
+  }
+  .machine_btn {
+    position: absolute;
+    border: none;
+    background: url(~@/assets/dlt_02.png) no-repeat center top;
+    background-size: 100% auto;
+    top: 9.3rem;
+    left: 2.3rem;
+    width: 2.74rem;
+    height: 1.17rem;
+    text-indent: -9999px;
+    // &:hover {
+    //   animation: scaleBtn 0.5s;
+    // }
+  }
+  .machine_btn2,
+  .machine_btn3 {
+    width: 2rem;
+    height: 0.87rem;
+    left: 0.67rem;
+    top: 10.65rem;
+    background-image: url(~@/assets/dlt_03.png);
+  }
+  .machine_btn3 {
+    left: 4.73rem;
+    background-image: url(~@/assets/dlt_04.png);
   }
 }
-#machineCanvas {
-  margin-top: 5.35rem;
+
+@-webkit-keyframes scaleBtn {
+  from {
+    -webkit-transform: scaleY(1) scaleX(1) translateY(0px);
+    transform: scaleY(1) scaleX(1) translateY(0px);
+  }
+  50% {
+    -webkit-transform: scaleY(0.94) scaleX(0.94) translateY(3px);
+    transform: scaleY(0.94) scaleX(0.94) translateY(3px);
+  }
+  to {
+    -webkit-transform: scaleY(1) scaleX(1) translateY(0);
+    transform: scaleY(1) scaleX(1) translateY(0);
+  }
+}
+
+@keyframes scaleBtn {
+  from {
+    -webkit-transform: scaleY(1) scaleX(1) translateY(0px);
+    transform: scaleY(1) scaleX(1) translateY(0px);
+  }
+  50% {
+    -webkit-transform: scaleY(0.94) scaleX(0.94) translateY(3px);
+    transform: scaleY(0.94) scaleX(0.94) translateY(3px);
+  }
+  to {
+    -webkit-transform: scaleY(1) scaleX(1) translateY(0);
+    transform: scaleY(1) scaleX(1) translateY(0);
+  }
+}
+
+.scaleBtn {
+  -webkit-animation: scaleBtn 0.5s;
+  animation: scaleBtn 0.5;
 }
