@@ -4,6 +4,14 @@
         <span :class="{ active: config.name == '1' }" @click="config.name = '1'">活动说明</span>
         <span :class="{ active: config.name == '2' }"  @click="config.name = '2'">我的奖品</span>
       </div>
+      <div class="gamec_ad" v-if="activityDetails.adList && activityDetails.adList.length > 1">
+        <a v-if="activityDetails.adList[1].adUrl" :href="activityDetails.adList[1].adUrl">
+          <img :src="activityDetails.adList[1].adImg" alt="">
+        </a>
+        <a v-if="!activityDetails.adList[1].adUrl" href="javascript:;">
+          <img :src="activityDetails.adList[1].adImg" alt="">
+        </a>
+      </div>
       <div class="tab_cont">
         <mt-tab-container v-model="config.name">
           <mt-tab-container-item id="1">
@@ -18,7 +26,7 @@
                 <span>活动时间</span>
               </div>
               <div class="tabc_txt">
-                <p>{{ activityDetails.startTime | date }} - {{  activityDetails.endTime | date }}</p>
+                <p>{{ activityDetails.startTime }} - {{  activityDetails.endTime }}</p>
               </div>
               <div class="tabc_tit">
                 <span>活动规则</span>

@@ -1,16 +1,19 @@
-import { Component, Vue, Inject, Model, Emit, Watch, Prop } from 'vue-property-decorator';
+import { Component, Inject } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { USERUPDATE } from '@/store/mutation-types';
+import { Share } from '@/views/common/share.ts';
 import { IHttp } from '@/plugins/mixins/provides/service';
+import Music from '@/components/Music/Music.component.vue';
 import { BehaviorSub } from '@/plugins/mixins/provides/subject/base';
 import { Subscription } from 'rxjs';
 import * as PIXI from 'pixi.js';
-import { locStorage } from '@/plugins/mixins/provides/service/storage';
-import { Button, Indicator } from 'mint-ui';
+import { locStorage, sesStorage } from '@/plugins/mixins/provides/service/storage';
+import { Button, Indicator, Toast, MessageBox } from 'mint-ui';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { router } from '@/router';
 import filters from '../../../plugins/filters/index';
 import { cloneObj } from '../../../plugins/mixins/provides/service/cloneObj';
+import Vconsole from 'vconsole';
 
 const TWEEN = require('@tweenjs/tween.js'); //感觉不是那个库
 
@@ -18,10 +21,11 @@ const user = namespace('user'); //store-user模块
 
 @Component({
   components: {
+    Music,
     mtButton: Button,
   },
 })
-export default class GameMachine extends Vue {
+export default class GameMachine extends Share {
   subscribeSub!: Subscription;
 
   // 依赖注入
@@ -43,12 +47,16 @@ export default class GameMachine extends Vue {
   running: boolean = false; //游戏开关
   slotTextures: Array<any> = [];
   anFrame: any; //帧管理器
-  audioBj: any; //背景音乐
+  audioBj: any; //摇杆音乐
 
   gameInfo: any = {}; //游戏详情
-  attentionState: boolean = false; //是否关注过，没有关注就不能游戏
-  isAttentionState: boolean = false;
+  isAdState: boolean = false; //首屏广告
+  attentionState: any = ''; //是否关注过，没有关注就不能游戏
+  isAttentionState: boolean = false; //关注开关
+  isStartTime: boolean = false; //活动时间
+  isStartTxt: string = ''; //活动时间
 
+  //活动公用参数
   params: any = {
     id: Number,
     openid: '',
@@ -57,17 +65,17 @@ export default class GameMachine extends Vue {
   //抽奖结果数据
   drawData: any = {
     isBindPhone: false,
-    isWin: false,
+    isWin: false, //是否中奖
     prizeName: '',
   };
-
+  //游戏，接口配置
   config: any = {
     queryUrl: 'Game/GetGameInfo', //获取活动详情
     countUrl: 'Game/GetLotteryCount', //获取抽奖次数
     lotteryUrl: 'Game/Lottery', //抽奖
     attentionUrl: 'Game/IsAttention', //是否关注公众号
     imgName: 'pixi_img_', //存取图片的key名后面会跟索引
-    count: 2, //总次数
+    count: 0, //总次数
     select: 1, //选中的第几个，一般默认是谢谢参与，这里的索引是下面图片的顺序
     len: 0, //奖品总长度
     REEL_WIDTH: 100, //图片的宽度
@@ -79,6 +87,7 @@ export default class GameMachine extends Vue {
     tweening: [], //所有运动参数集合
   };
 
+  //数据加载的图片
   imglist: any = [
     // require('@/assets/eggHead.png')
     // { name: '', url: '@/assets/eggHead.png' },
@@ -88,45 +97,71 @@ export default class GameMachine extends Vue {
   ];
 
   created() {
+    //广告弹层
+    let sesState: any = sesStorage.getItem('isAdState');
+    if (sesState) {
+      this.isAdState = false;
+    } else {
+      this.isAdState = true;
+      sesStorage.setItem('isAdState', 'ok');
+    }
+
     this.activityInfo = locStorage.getItem('activityInfo');
     if (router.currentRoute.query) {
       console.log(router.currentRoute.query.openid);
       this.params.id = router.currentRoute.query.id || this.activityInfo.id;
-      this.params.openid = router.currentRoute.query.openid || this.activityInfo.openid;
+      this.params.openid = sessionStorage.getItem('openid');
       locStorage.setItem('activityInfo', this.params);
     }
+    if (!this.params.openid) {
+      this.isAttentionState = true;
+    }
     this.w_height = window.screen.height + 'px';
-    this.getData();
+
+    // new Vconsole(); //打开测试
   }
 
   //渲染完了
   mounted() {
-    this.audioBj = document.getElementById('lhj_audio'); //背景音乐
-    this.audioBj.load(); //背景音乐加载
+    this.getData();
+    this.audioBj = document.getElementById('lhj_audio'); //摇杆音乐
+    this.audioBj.load(); //摇杆音乐加载
     this.app = new PIXI.Application(this.config.width, this.config.height, { transparent: true });
     let aa: any = document.getElementById('machineCanvas') || document.body;
     aa.innerHTML = '';
     aa.appendChild(this.app.view);
     this.anFrame = requestAnimationFrame(this.animate); //  动画更新
-    console.log('开始了');
-    console.log(this.app);
   }
 
   //获取数据
   getData() {
     //获取是否关注
-    this.$Http
-      .api(this.config.attentionUrl, { openid: this.params.openid }, 'get')
-      .then((data: HttpBase<HttpResult>) => {
+    if (this.params.openid) {
+      this.$Http
+        .api(this.config.attentionUrl, { openid: this.params.openid }, 'get')
+        .then((data: HttpBase<HttpResult>) => {
+          if (data.success) {
+            this.attentionState = data.result;
+            this.isAttentionState = this.attentionState ? false : true;
+          }
+        });
+      //获取抽奖次数
+      this.$Http.api(this.config.countUrl, this.params, 'get').then((data: HttpBase<HttpResult>) => {
         if (data.success) {
-          this.attentionState = data.result;
-          this.isAttentionState = this.attentionState ? false : true;
+          this.config.count = data.result;
         }
       });
+    }
     //获取活动详情
     this.$Http.api(this.config.queryUrl, { id: this.params.id }, 'get').then((data: HttpBase<HttpResult>) => {
       if (data.success) {
         this.gameInfo = data.result;
+        //微信分享方法调用
+        super.weChatShare(this.gameInfo, window.location.origin + '/game/machine?id=' + this.params.id);
+        //首屏广告
+        if (this.gameInfo.adList && this.gameInfo.adList[0] && this.gameInfo.adList[0].adImg) {
+        }
+        //活动奖品
         if (this.gameInfo && this.gameInfo.gamePrizeList && this.gameInfo.gamePrizeList.length) {
           this.gameInfo.gamePrizeList.push({
             prize: {
@@ -140,31 +175,29 @@ export default class GameMachine extends Vue {
             index: index,
           }));
         }
+        //活动时间判断
+        if (
+          new Date().getTime() <= new Date(this.gameInfo.startTime).getTime() ||
+          new Date().getTime() >= new Date(this.gameInfo.endTime).getTime()
+        ) {
+          this.isStartTime = true;
+          this.isStartTxt =
+            new Date().getTime() <= new Date(this.gameInfo.startTime).getTime() ? '活动还没有开始' : '活动已结束';
+        }
+        //初始化游戏
         this.init();
         console.log(this.gameInfo);
       }
     });
-    //获取抽奖次数
-    this.$Http.api(this.config.countUrl, this.params, 'get').then((data: HttpBase<HttpResult>) => {
-      if (data.success) {
-        this.config.count = data.result;
-      }
-    });
-  }
-
-  //关注提示
-  attentionHint() {
-    if (!this.attentionState) {
-    }
   }
 
   //得奖后的处理
   fulfillHandle() {
     this.$NotificationOneSub.pushParams({
       key: 'game',
-      value: this.drawData,
+      value: this.drawData, //抽奖返回的结果
       state: {
-        count: this.config.count,
+        count: this.config.count, //剩余的次数
       },
     });
     router.push({ name: 'gameExpiry' });
@@ -178,17 +211,33 @@ export default class GameMachine extends Vue {
   //开始
   //Function to start playing.
   startPlay(name: string = '') {
-    if (!this.attentionState) {
-      //是否关注微信公众号
-      this.isAttentionState = true;
+    //活动时间限制
+    if (this.isStartTime) {
+      MessageBox('提示', this.isStartTxt);
+      return;
     }
     //判断次数
     if (this.config.count <= 0) {
+      Toast({
+        message: '没有次数了！',
+        position: 'bottom',
+        duration: 2000,
+      });
       return;
     }
-    //开关
+    //是否关注微信公众号
+    if (!this.params.openid) {
+      this.isAttentionState = true;
+    }
+    if (this.attentionState == '') {
+      return;
+    }
+    if (!this.attentionState) {
+      this.isAttentionState = true;
+      return;
+    }
+    //重复开关
     if (this.running) return;
-
     Indicator.open('加载中...');
 
     //请求接口
@@ -213,19 +262,21 @@ export default class GameMachine extends Vue {
     // }
 
     //抽奖
+    this.audioBj.play(); //播放音乐
     this.$Http.api(this.config.lotteryUrl, this.params, 'get').then((data: HttpBase<HttpResult>) => {
       if (data.success) {
         this.running = true;
         this.drawData = data.result;
+        Indicator.close();
         //动画
         if (name === 'btn1') {
           this.btnAnime(name); //动画
         }
-        this.audioBj.play(); //播放音乐
 
         if (this.drawData.isWin) {
           //是否中奖，返回中奖名称
-          let obj = this.imglist.filter((res: any) => res.name === this.drawData.isWin);
+          console.log(this.imglist);
+          let obj = this.imglist.filter((res: any) => res.name === this.drawData.prizeName);
           if (obj && obj.length) {
             this.config.select = +obj[0].index;
           }
@@ -234,7 +285,8 @@ export default class GameMachine extends Vue {
         }
         console.log('看看第几个');
         console.log(this.config.select);
-        Indicator.close();
+        console.log(this.slotTextures);
+        console.log(this.slotTextures[this.config.select].baseTexture.imageUrl);
         //转起来
         for (var i = 0; i < this.config.reels.length; i++) {
           var r = this.config.reels[i];
@@ -250,6 +302,8 @@ export default class GameMachine extends Vue {
           );
         }
         this.config.count -= 1;
+      } else {
+        Indicator.close();
       }
     });
 
@@ -267,7 +321,6 @@ export default class GameMachine extends Vue {
     if (Object.keys(PIXI.loader.resources).length) {
       let keys = Object.keys(PIXI.loader.resources);
       keys.forEach((item: any, index: number) => {
-        console.log(PIXI.loader.resources[this.config.imgName + index + '']);
         arr.push(PIXI.loader.resources[this.config.imgName + index + ''].texture);
       });
     }
@@ -406,6 +459,7 @@ export default class GameMachine extends Vue {
   btnAnime(name: string) {
     let that = this;
     var coords = { x: 0, y: 0, s: 1 };
+    var coords2 = { x: 0, y: 0, s: 1 };
     //按钮开始
     var tweenA = new TWEEN.Tween(coords)
       .to({ y: 3, s: 0.96 }, 200)
@@ -413,7 +467,7 @@ export default class GameMachine extends Vue {
       .onUpdate(function() {
         (<any>that.$refs[name]).style.setProperty(
           'transform',
-          'translate(' + coords.x + 'px, ' + coords.y + 'px) scale( ' + coords.s + ' )'
+          'translateY(' + coords.y + 'px) scale( ' + coords.s + ' )'
         );
       });
     // 按钮结束
@@ -423,34 +477,34 @@ export default class GameMachine extends Vue {
       .onUpdate(function() {
         (<any>that.$refs[name]).style.setProperty(
           'transform',
-          'translate(' + coords.x + 'px, ' + coords.y + 'px) scale( ' + coords.s + ' )'
+          'translateY(' + coords.y + 'px) scale( ' + coords.s + ' )'
         );
       });
     //遥感开始
-    var tweenC = new TWEEN.Tween(coords)
+    var tweenC = new TWEEN.Tween(coords2)
       .to({ x: 5, y: 40, s: 0.8 }, 300)
       .easing(TWEEN.Easing.Linear.None)
       .onUpdate(function() {
         (<any>that.$refs['pole']).style.setProperty(
           'transform',
-          'translate(' + coords.x + 'px, ' + coords.y + 'px) scaleY( ' + coords.s + ' )'
+          'translate(' + coords2.x + 'px, ' + coords2.y + 'px) scaleY( ' + coords2.s + ' )'
         );
       });
     //遥感结束
-    var tweenD = new TWEEN.Tween(coords)
+    var tweenD = new TWEEN.Tween(coords2)
       .to({ x: 0, y: 0, s: 1 }, 200)
       .easing(TWEEN.Easing.Quintic.Out)
       .onUpdate(function() {
         (<any>that.$refs['pole']).style.setProperty(
           'transform',
-          'translate(' + coords.x + 'px, ' + coords.y + 'px) scaleY( ' + coords.s + ' )'
+          'translate(' + coords2.x + 'px, ' + coords2.y + 'px) scaleY( ' + coords2.s + ' )'
         );
       });
 
     tweenA.chain(tweenB);
     tweenC.chain(tweenD);
     tweenA.start();
-    tweenC.delay(200);
+    tweenC.delay(20);
     tweenC.start();
   }
 

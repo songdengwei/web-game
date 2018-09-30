@@ -42,5 +42,7 @@ export const API: any = [
   },
 ];
 
-export const HOST: string = 'http://172.16.0.206:7020';
+export const HOST: string = 'http://vphonor-game.vpclub.cn'; //正式
+// export const HOST: string = 'http://218.17.39.178:7095'; //正式
+// export const HOST: string = 'http://172.16.0.206:7020';  //测试
 // window.location.origin.indexOf('localhost') !== -1 ? 'http://172.16.10.51:5003' : window.location.origin; //生产环境

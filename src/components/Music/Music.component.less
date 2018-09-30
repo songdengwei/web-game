@@ -1,0 +1,78 @@
+/* 音乐 */
+.bg_music {
+  position: absolute;
+  z-index: 11;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+}
+.music_ioc {
+  z-index: 11;
+  position: absolute;
+  left: 0.2rem;
+  top: 0.2rem;
+  overflow: hidden;
+  width: 0.5rem;
+  height: 0.5rem;
+}
+.bgmusic,
+.bgmusic .control {
+  width: 100%;
+  height: 100%;
+}
+
+.bgmusic .control {
+  background: url(~@/assets/audio/kaixue_music_bg.gif) transparent no-repeat 50%;
+  background-size: contain;
+}
+
+.bgmusic .control .control-after {
+  position: absolute;
+  background: url(~@/assets/audio/kaixue_music.png) transparent no-repeat 50%;
+  background-size: 100% 100%;
+  -webkit-animation: rotate2d 1.2s linear infinite;
+  animation: rotate2d 1.2s linear infinite;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+.bgmusic.stopped .control {
+  background: none;
+}
+
+.bgmusic.stopped .control .control-after {
+  -webkit-animation: none;
+  animation: none;
+}
+
+.rotate2d {
+  -webkit-animation-name: rotate2d;
+  animation-name: rotate2d;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+
+@-webkit-keyframes rotate2d {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes rotate2d {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}

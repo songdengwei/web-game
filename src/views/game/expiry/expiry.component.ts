@@ -47,7 +47,7 @@ export default class GameExpiry extends Vue {
   }
 
   //跳转
-  goTo(name: any, query: any) {
+  goTo(name: string, query: any) {
     if (name == 'binding') {
       window.location.href = 'http://www.wxnnyd.com/nn-ticket/register/loginPre?openid=' + this.activityInfo.openid;
     } else {
@@ -94,6 +94,7 @@ export default class GameExpiry extends Vue {
       case 'binding': //绑定手机号
         break;
       case 'award': //领取奖励
+        router.push({ name: 'gameCenter', query: { name: '2' } });
         break;
       case 'phone': //提交手机号
         break;

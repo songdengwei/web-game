@@ -10,7 +10,7 @@
       </div>
       <div class="expiry_box expiry_award" v-show="config.name === 'award'">
         <button @click="submitBox('award')">领取奖励</button>
-        <p>恭喜您获得“ <b>{{ drawData.prizeName }}</b> ”<br/>相关信息可查看﹃<b @click="goTo('gameCenter',{ name : 2 })">我的奖品</b>”中领取</p>
+        <p>恭喜您获得“ <b>{{ drawData.prizeName }}</b> ”<br/>相关信息可查看﹃<b @click="goTo('gameCenter',{ name : '2' })">我的奖品</b>”中领取</p>
       </div>
       <!-- <div class="expiry_box expiry_phone" v-show="config.name === 'phone'">
         <input type="text" v-model="config.params.phone" class="expirya_input">
@@ -18,11 +18,11 @@
         <span class="expirya_span" @click="getCode()">获取验证码</span>
         <button @click="submitBox('phone')">提交信息</button>
       </div> -->
-      <div class="expiry_btns flex-top-auto">
+      <!-- <div class="expiry_btns flex-top-auto">
         <a href="#">我要手机</a>
         <a href="#">我要流量</a>
         <a href="#">电子券使用攻略</a>
-      </div>
+      </div> -->
   </div>
 </template>
 

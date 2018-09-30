@@ -7,9 +7,56 @@
   <meta name="msapplication-tap-highlight" content="no" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-  <script>
-    ; (function () {
+  <script type="text/javascript">
+    //微信分享里面的跳转
+    function getQueryStringByName(name) {
+      var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+      if (result == null || result.length < 1) {
+        return "";
+      }
+      return result[1];
+    }
 
+    if (getQueryStringByName('openid')) {
+      sessionStorage.setItem('openid', getQueryStringByName('openid'));
+      window.location.href = window.location.origin + '/game/machine?id=' + getQueryStringByName('id')
+    }
+    // console.log('首页的');
+    // console.log(getQueryStringByName('openid'));
+    window.ShareData = {
+      title: '',
+      desc: '',
+      imgUrl: '',//分享成功后的图片
+      link: '',   //分享链接
+      success: function () {
+        // 用户确认分享后执行的回调函数
+      },
+      cancel: function () {
+        // 用户取消分享后执行的回调函数
+
+      }
+    };
+
+    function WXConfigGetter(config) {
+
+      wx.config({
+        debug: false,
+        appId: config.appId,			// 必填，公众号的唯一标识
+        timestamp: config.timestamp,   			// 必填，生成签名的时间戳
+        nonceStr: config.nonceStr,				// 必填，生成签名的随机串
+        signature: config.signature,			// 必填，签名，见附录1
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'hideOptionMenu', 'hideMenuItems', 'chooseWXPay', 'showOptionMenu', 'showMenuItems']// 必填，需要使用的JS接口列表
+      });
+      //微信分享
+      wx.ready(function () {
+        wx.onMenuShareTimeline(ShareData);//分享到朋友圈
+        wx.onMenuShareAppMessage(ShareData);//分享给朋友
+        wx.hideMenuItems({
+          menuList: ['menuItem:copyUrl', 'menuItem:openWithSafari', 'menuItem:openWithQQBrowser'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+        });
+      });
+    }
+    ; (function () {
       var change = 'orientationchange' in window ? 'orientationchange' : 'resize';
       function calculate() {
         var deviceWidth = document.documentElement.clientWidth;
@@ -24,7 +71,7 @@
       calculate();
     })();
   </script>
-  <title>微品致远</title>
+  <title>移动大乐透</title>
 </head>
 
 <body>
@@ -33,6 +80,10 @@
   </noscript>
   <div id="app"></div>
   <!-- built files will be auto injected -->
+
+  <!-- <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
+  <!-- <script src="https://weixin.vpclub.cn/api/weixinbase/get?id=2005"></script> -->
+
 
 </body>
 
